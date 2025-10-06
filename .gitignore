@@ -40,14 +40,15 @@ htmlcov/
 # Pyenv
 .python-version
 
-# IDEs
+# IDEs and editors
 .vscode/
 .idea/
 *.sublime-workspace
 *.sublime-project
 
-# Jupyter
+# Jupyter notebooks and checkpoints
 .ipynb_checkpoints
+*.ipynb
 
 # Environment variables
 .env
@@ -56,16 +57,26 @@ htmlcov/
 # Logs
 *.log
 
-# OS
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# OneDrive / temporary files
+# Temporary files
 ~$*
 *.tmp
 
-# Ignore node_modules if present
+# Node.js (if used)
 node_modules/
 
-# Ignore build artifacts
+# Build artifacts
 *.egg
+
+# Old model formats (you now use .joblib)
+*.pkl
+*.sav
+*.h5
+
+# Optional: ignore raw datasets if not needed
+data/
+*.csv
+*.xlsx
