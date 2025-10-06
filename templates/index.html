@@ -25,7 +25,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       animation: fadeIn 1s ease-in-out;
       width: 100%;
-      max-width: 700px;
+      max-width: 750px;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(30px); }
@@ -47,6 +47,18 @@
     .spinner-border {
       display: none;
       margin: 20px auto;
+    }
+    .description {
+      margin-top: 40px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    .description h5 {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .description ul {
+      padding-left: 20px;
     }
     footer {
       margin-top: 40px;
@@ -93,33 +105,53 @@
         <span class="visually-hidden">Loading...</span>
       </div>
     </form>
-  </div>
 
-  {% if prediction %}
-  <script>
-    window.onload = function() {
-      var myModal = new bootstrap.Modal(document.getElementById('resultModal'));
-      myModal.show();
-    };
-  </script>
+    {% if prediction %}
+    <script>
+      window.onload = function() {
+        var myModal = new bootstrap.Modal(document.getElementById('resultModal'));
+        myModal.show();
+      };
+    </script>
 
-  <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="resultModalLabel">🏡 Prediction Result</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">
-          <p>{{ prediction }}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Predict Again</button>
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="resultModalLabel">🏡 Prediction Result</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <p>{{ prediction }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Predict Again</button>
+          </div>
         </div>
       </div>
     </div>
+    {% endif %}
+
+    <div class="description">
+      <h5> About This Model</h5>
+      <p>This project analyzes and models the key macroeconomic and demographic factors influencing US home prices from 2000 to 2025 using publicly available data and machine learning techniques.</p>
+      <p><strong>Final Model:</strong> Random Forest Regressor</p>
+      <p><strong>Performance:</strong><br>
+         R² Score: 0.9998<br>
+         RMSE: 0.0023
+      </p>
+      <p><strong>Data Sources:</strong></p>
+      <ul>
+        <li>Home Price Index (HPI): S&P Case-Shiller Index via FRED</li>
+        <li>Mortgage Rates: FRED - MORTGAGE30US</li>
+        <li>Unemployment Rate: FRED - UNRATE</li>
+        <li>Median Household Income: US Census Bureau</li>
+        <li>Housing Starts: FRED - HOUST</li>
+        <li>Consumer Price Index (CPI): FRED - CPIAUCSL</li>
+        <li>Population Estimates: US Census Bureau</li>
+      </ul>
+    </div>
   </div>
-  {% endif %}
 
   <footer>
     <p>Model developed and deployed by <strong>Sai Shinde</strong></p>
