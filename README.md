@@ -89,3 +89,41 @@ GitHub: [@shindesai125](https://github.com/shindesai125)
 
 Feel free to explore and reuse this project with attribution. 🚀
 
+
+US Home Price Modeling
+
+Small project for experimenting with U.S. home price modeling. This repo contains:
+
+- `app.py` — application entry (project code)
+- `requirements.txt` — Python dependencies
+- `render.yaml` — deployment/render config
+- `.gitignore` — ignores common temp files and environments
+
+Quick start
+
+1. Open PowerShell in this folder:
+
+```powershell
+cd 'C:\Users\shind\OneDrive\Desktop\US-Home-Price-Modeling'
+```
+
+2. Run the bundled setup script to finish Git setup, make an initial commit, and optionally create a GitHub repository:
+
+```powershell
+# Make sure the script is allowed to run (one-time, if your execution policy blocks it):
+# Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+.\n+.\setup-repo.ps1
+
+# To create a GitHub repo and push (requires GitHub CLI `gh`):
+.\setup-repo.ps1 -CreateGitHub -RepoName "my-repo-name"
+```
+
+What the script does
+
+- Ensures `git` is available and initializes a repo if needed
+- Prompts to set `git` global `user.name` and `user.email` if they aren't configured
+- Stages all files and creates an initial commit
+- Renames the branch to `main`
+- If requested and you have `gh` installed, creates a remote repo and pushes
+
+If you prefer, you can run the Git commands manually — ask and I will walk you through each step.

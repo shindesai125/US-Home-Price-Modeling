@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: us-home-price-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
