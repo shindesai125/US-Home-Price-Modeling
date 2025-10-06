@@ -33,7 +33,7 @@ def home():
             values = [float(request.form[feature]) for feature, _ in FEATURE_NAMES]
             features = np.array([values])
             log_price = model.predict(features)[0]
-            actual_price = np.exp(log_price)  # Reverse log transformation
+            actual_price = np.exp(log_price)
             prediction = f"The predicted House Price is: ${actual_price:,.2f}"
         except Exception as e:
             prediction = f"Error: {str(e)}"

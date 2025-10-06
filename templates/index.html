@@ -3,66 +3,140 @@
 <head>
   <meta charset="UTF-8">
   <title>🏡 US Home Price Prediction</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <style>
     body {
       background: linear-gradient(135deg, #e0f7fa, #fce4ec);
       font-family: 'Segoe UI', sans-serif;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
     }
     .glass-card {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 30px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       animation: fadeIn 1s ease-in-out;
       width: 100%;
-      max-width: 650px;
+      max-width: 700px;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .prediction {
-      font-size: 1.8rem;
+    .form-label {
+      font-weight: 500;
+    }
+    .modal-body p {
+      font-size: 1.6rem;
       font-weight: bold;
       color: #4caf50;
-      margin-top: 20px;
-      text-align: center;
       animation: glow 1.5s infinite alternate;
     }
     @keyframes glow {
       from { text-shadow: 0 0 5px #4caf50; }
       to { text-shadow: 0 0 20px #4caf50; }
     }
-    .form-label {
-      font-weight: 500;
+    .spinner-border {
+      display: none;
+      margin: 20px auto;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #555;
+    }
+    footer a {
+      margin: 0 10px;
+      text-decoration: none;
+    }
+    footer img {
+      width: 24px;
+      vertical-align: middle;
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
   <div class="glass-card">
     <h2 class="text-center mb-4">🏡 US Home Price Prediction</h2>
-    <form method="POST">
+    <form method="POST" onsubmit="showSpinner()">
       {% for feature, unit in features %}
         <div class="mb-3">
-          <label class="form-label">{{ feature }} ({{ unit }})</label>
-          <input type="text" class="form-control" name="{{ feature }}" required>
+          <label class="form-label" data-bs-toggle="tooltip" title="Enter {{ unit }} value">
+            {{ feature }} ({{ unit }})
+          </label>
+          <input type="text" class="form-control" name="{{ feature }}" required
+                 placeholder="{% if feature == 'Year' %}e.g. 2025
+                              {% elif feature == 'Month' %}e.g. 10
+                              {% elif feature == 'Post_COVID' %}0 = No, 1 = Yes
+                              {% elif feature == 'Mortgage_Rate_Level' %}0 = Low, 1 = Med, 2 = High
+                              {% elif unit == '%' %}e.g. 6.5
+                              {% elif unit == 'Millions' %}e.g. 331
+                              {% elif unit == 'Index Value' %}e.g. 200
+                              {% elif unit == 'Units' %}e.g. 1500
+                              {% elif unit == 'Log Value' %}e.g. 1.6
+                              {% elif unit == '% Growth' %}e.g. 2.3
+                              {% else %}Enter value{% endif %}">
         </div>
       {% endfor %}
       <button type="submit" class="btn btn-success w-100">🔍 Predict</button>
-    </form>
-
-    {% if prediction %}
-      <div class="prediction">
-        {{ prediction }}
+      <div class="spinner-border text-primary" role="status" id="loadingSpinner">
+        <span class="visually-hidden">Loading...</span>
       </div>
-    {% endif %}
+    </form>
   </div>
+
+  {% if prediction %}
+  <script>
+    window.onload = function() {
+      var myModal = new bootstrap.Modal(document.getElementById('resultModal'));
+      myModal.show();
+    };
+  </script>
+
+  <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="resultModalLabel">🏡 Prediction Result</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p>{{ prediction }}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Predict Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <footer>
+    <p>Model developed and deployed by <strong>Sai Shinde</strong></p>
+    <a href="https://github.com/shindesai125" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub"> GitHub
+    </a>
+    <a href="https://www.linkedin.com/in/sai-shinde-98156a30b/" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" alt="LinkedIn"> LinkedIn
+    </a>
+  </footer>
+
+  <script>
+    function showSpinner() {
+      document.getElementById('loadingSpinner').style.display = 'block';
+    }
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(t => new bootstrap.Tooltip(t));
+  </script>
 </body>
 </html>
