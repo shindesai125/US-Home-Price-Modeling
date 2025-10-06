@@ -10,11 +10,6 @@
     body {
       background: linear-gradient(135deg, #e0f7fa, #fce4ec);
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       padding: 20px;
     }
     .glass-card {
@@ -24,8 +19,8 @@
       padding: 30px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       animation: fadeIn 1s ease-in-out;
-      width: 100%;
       max-width: 750px;
+      margin: auto;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(30px); }
@@ -34,19 +29,33 @@
     .form-label {
       font-weight: 500;
     }
-    .modal-body p {
-      font-size: 1.6rem;
+    .spinner-border {
+      display: none;
+      margin: 20px auto;
+    }
+    .prediction-box {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 15px;
+      background-color: #e8f5e9;
+      box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+      animation: fadeIn 0.6s ease-in-out;
+      text-align: center;
+    }
+    .prediction-box h5 {
+      margin-bottom: 10px;
       font-weight: bold;
-      color: #4caf50;
+    }
+    .prediction-box p {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #2e7d32;
       animation: glow 1.5s infinite alternate;
     }
     @keyframes glow {
       from { text-shadow: 0 0 5px #4caf50; }
       to { text-shadow: 0 0 20px #4caf50; }
-    }
-    .spinner-border {
-      display: none;
-      margin: 20px auto;
     }
     .description {
       margin-top: 40px;
@@ -80,24 +89,37 @@
 <body>
   <div class="glass-card">
     <h2 class="text-center mb-4">🏡 US Home Price Prediction</h2>
+
+    {% if prediction %}
+      <div id="predictionBox" class="prediction-box">
+        <h5>🏡 Prediction Result</h5>
+        <p>{{ prediction }}</p>
+        <button class="btn btn-outline-secondary mt-2" onclick="hidePrediction()">Close</button>
+      </div>
+    {% endif %}
+
     <form method="POST" onsubmit="showSpinner()">
       {% for feature, unit in features %}
         <div class="mb-3">
           <label class="form-label" data-bs-toggle="tooltip" title="Enter {{ unit }} value">
             {{ feature }} ({{ unit }})
           </label>
-          <input type="text" class="form-control" name="{{ feature }}" required
-                 placeholder="{% if feature == 'Year' %}e.g. 2025
-                              {% elif feature == 'Month' %}e.g. 10
-                              {% elif feature == 'Post_COVID' %}0 = No, 1 = Yes
-                              {% elif feature == 'Mortgage_Rate_Level' %}0 = Low, 1 = Med, 2 = High
-                              {% elif unit == '%' %}e.g. 6.5
-                              {% elif unit == 'Millions' %}e.g. 331
-                              {% elif unit == 'Index Value' %}e.g. 200
-                              {% elif unit == 'Units' %}e.g. 1500
-                              {% elif unit == 'Log Value' %}e.g. 1.6
-                              {% elif unit == '% Growth' %}e.g. 2.3
-                              {% else %}Enter value{% endif %}">
+          {% if feature == 'Post_COVID' %}
+            <input type="number" class="form-control" name="{{ feature }}" required min="0" max="1" placeholder="0 = No, 1 = Yes">
+          {% elif feature == 'Mortgage_Rate_Level' %}
+            <input type="number" class="form-control" name="{{ feature }}" required min="0" max="2" placeholder="0 = Low, 1 = Med, 2 = High">
+          {% else %}
+            <input type="number" class="form-control" name="{{ feature }}" required step="any"
+                   placeholder="{% if feature == 'Year' %}e.g. 2025
+                                {% elif feature == 'Month' %}e.g. 10
+                                {% elif unit == '%' %}e.g. 6.5
+                                {% elif unit == 'Millions' %}e.g. 331
+                                {% elif unit == 'Index Value' %}e.g. 200
+                                {% elif unit == 'Units' %}e.g. 1500
+                                {% elif unit == 'Log Value' %}e.g. 1.6
+                                {% elif unit == '% Growth' %}e.g. 2.3
+                                {% else %}Enter value{% endif %}">
+          {% endif %}
         </div>
       {% endfor %}
       <button type="submit" class="btn btn-success w-100">🔍 Predict</button>
@@ -106,34 +128,8 @@
       </div>
     </form>
 
-    {% if prediction %}
-    <script>
-      window.onload = function() {
-        var myModal = new bootstrap.Modal(document.getElementById('resultModal'));
-        myModal.show();
-      };
-    </script>
-
-    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="resultModalLabel">🏡 Prediction Result</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center">
-            <p>{{ prediction }}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Predict Again</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
-
     <div class="description">
-      <h5> About This Model</h5>
+      <h5>About This Model</h5>
       <p>This project analyzes and models the key macroeconomic and demographic factors influencing US home prices from 2000 to 2025 using publicly available data and machine learning techniques.</p>
       <p><strong>Final Model:</strong> Random Forest Regressor</p>
       <p><strong>Performance:</strong><br>
@@ -166,6 +162,10 @@
   <script>
     function showSpinner() {
       document.getElementById('loadingSpinner').style.display = 'block';
+    }
+    function hidePrediction() {
+      const box = document.getElementById('predictionBox');
+      if (box) box.style.display = 'none';
     }
     const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     tooltips.forEach(t => new bootstrap.Tooltip(t));
