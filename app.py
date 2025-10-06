@@ -34,7 +34,7 @@ def home():
             features = np.array([values])
             log_price = model.predict(features)[0]
             actual_price = np.exp(log_price)
-            prediction = f"The predicted House Price is: ${actual_price:,.2f}"
+            prediction = f"The predicted House Price is: ${actual_price*1000:,.2f}"
         except Exception as e:
             prediction = f"Error: {str(e)}"
     return render_template("index.html", features=FEATURE_NAMES, prediction=prediction)
